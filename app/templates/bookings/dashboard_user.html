@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Welcome -->
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Welcome, {{ current_user.name }} 👋</h2>
+        <p class="text-muted">Plan, book, and enjoy your favorite activities</p>
+    </div>
+
+    <!-- Quick Booking -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-lightning-charge text-warning"></i> Quick Booking</h5>
+            <form method="GET" action="{{ url_for('booking.list_facilities') }}">
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <input type="text" name="q" class="form-control" placeholder="Search facilities...">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" name="date" class="form-control">
+                    </div>
+                    <div class="col-md-3">
+                        <select name="sport" class="form-select">
+                            <option value="">All Sports</option>
+                            <option value="football">Football</option>
+                            <option value="tennis">Tennis</option>
+                            <option value="badminton">Badminton</option>
+                            <option value="cricket">Cricket</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-grid">
+                        <button class="btn btn-primary"><i class="bi bi-search"></i> Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- My Bookings -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-calendar-check text-success"></i> My Bookings</h5>
+            {% if active_rentals > 0 %}
+                <p class="text-muted">You have <strong>{{ active_rentals }}</strong> active booking(s).</p>
+                <a href="{{ url_for('booking.my_bookings') }}" class="btn btn-outline-primary btn-sm">View All</a>
+            {% else %}
+                <p class="text-muted">No active bookings yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Upcoming Matches -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-trophy text-danger"></i> Upcoming Matches</h5>
+            {% if revenue_trends %}
+                <ul class="list-group list-group-flush">
+                    {% for month, revenue in revenue_trends %}
+                        <li class="list-group-item">
+                            <i class="bi bi-calendar-event"></i> {{ month }} — <span class="text-muted">Reserved slot</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No upcoming matches found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Recommended Venues -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-star text-warning"></i> Recommended Venues</h5>
+            {% if top_products %}
+                <div class="row g-3">
+                    {% for name, rentals in top_products %}
+                    <div class="col-md-4 col-sm-6">
+                        <div class="border rounded p-2 h-100">
+                            <h6 class="mb-1">{{ name }}</h6>
+                            <small class="text-muted">{{ rentals }} recent bookings</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">No recommendations yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

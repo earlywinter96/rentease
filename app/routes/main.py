@@ -8,21 +8,12 @@ from app.models import User, Booking, Court, Facility, UserRole, BookingStatus
 
 main = Blueprint("main", __name__)
 
-# -------------------- Redirect old auth paths --------------------
-@main.route("/register")
-def redirect_register():
-    return redirect(url_for("auth.register"))
-
-@main.route("/login")
-def redirect_login():
-    return redirect(url_for("auth.login"))
-
 # -------------------- Dashboard --------------------
 @main.route("/dashboard")
 @login_required
 def dashboard():
     """
-    Role-based scoping:
+    Role-based dashboards:
       - admin: everything
       - owner: only their facilities & related bookings
       - user: only their bookings
@@ -102,8 +93,8 @@ def dashboard():
                                    .order_by(func.sum(Booking.total_price).desc()) \
                                    .limit(6).all()
 
-    return render_template(
-        "bookings/dashboard.html",
+    # Context data shared by all dashboards
+    context_data = dict(
         total_rentals=int(total_rentals),
         total_revenue=float(total_revenue),
         active_rentals=int(active_rentals),
@@ -113,6 +104,14 @@ def dashboard():
         top_customers=top_customers,
         role=current_user.role.value if isinstance(current_user.role, UserRole) else str(current_user.role)
     )
+
+    # Render different dashboard per role
+    if current_user.role == UserRole.admin:
+        return render_template("bookings/dashboard.html", **context_data)
+    elif current_user.role == UserRole.owner:
+        return render_template("bookings/dashboard_owner.html", **context_data)
+    else:
+        return render_template("bookings/dashboard_user.html", **context_data)
 
 # -------------------- Home --------------------
 @main.route("/")

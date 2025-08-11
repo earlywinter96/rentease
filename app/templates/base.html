@@ -16,18 +16,20 @@
         body {
             background-color: #f8f9fa;
             font-family: 'Inter', sans-serif;
+            padding-bottom: 60px; /* Space for bottom nav */
         }
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.3rem;
-            letter-spacing: 0.5px;
+        .navbar-brand img {
+            height: 40px;
+            width: auto;
+            transition: all 0.3s ease;
         }
-        .nav-link.active {
-            font-weight: 600;
-            border-bottom: 2px solid #0d6efd;
+        @media (max-width: 576px) {
+            .navbar-brand img {
+                height: 28px;
+            }
         }
         .content-wrapper {
-            padding: 2rem 1rem;
+            padding: 1rem;
         }
         .card {
             border-radius: 12px;
@@ -36,7 +38,53 @@
             background: #fff;
             border-top: 1px solid #eaeaea;
             padding: 1rem;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+        }
+        /* Animated hamburger */
+        .navbar-toggler {
+            border: none;
+            outline: none;
+        }
+        .navbar-toggler-icon {
+            transition: transform 0.3s ease;
+        }
+        .navbar-toggler.collapsed .navbar-toggler-icon {
+            transform: rotate(0deg);
+        }
+        .navbar-toggler:not(.collapsed) .navbar-toggler-icon {
+            transform: rotate(90deg);
+        }
+        /* Sticky bottom nav for mobile */
+        .bottom-nav {
+            display: none;
+        }
+        @media (max-width: 576px) {
+            .bottom-nav {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: #fff;
+                border-top: 1px solid #eaeaea;
+                padding: 6px 0;
+                z-index: 999;
+            }
+            .bottom-nav a {
+                text-decoration: none;
+                color: #555;
+                font-size: 0.85rem;
+                text-align: center;
+            }
+            .bottom-nav a.active {
+                color: #0d6efd;
+            }
+            .bottom-nav i {
+                font-size: 1.3rem;
+                display: block;
+            }
         }
     </style>
 </head>
@@ -45,29 +93,23 @@
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
     <div class="container-fluid">
-        <a class="navbar-brand text-primary" href="{{ url_for('main.home') }}">
-            <i class="bi bi-house-door-fill"></i> RentEase
+        
+        <!-- Brand Logo -->
+        <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.home') }}">
+            <img src="{{ url_for('static', filename='images/rent.png') }}" alt="RentEase Logo" class="me-2">
+            RentEase
         </a>
-                    {% if current_user.is_authenticated and current_user.role == "admin" %}
-            <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
-                Admin
-            </a>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{ url_for('booking.admin_facilities') }}">Facility Approval</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('booking.admin_bookings') }}">Booking Overview</a></li>
-            </ul>
-            </li>
-            {% endif %}
 
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+        <!-- Mobile Menu Button -->
+        <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" 
                 data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
                 aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        <!-- Menu Items -->
         <div class="collapse navbar-collapse" id="navbarNav">
+            
             <!-- LEFT NAV -->
             <ul class="navbar-nav me-auto">
                 {% if current_user.is_authenticated %}
@@ -76,6 +118,16 @@
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('booking.list_facilities') }}">Facilities</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('booking.my_bookings') }}">Bookings</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.manage_users') }}">Users</a></li>
+                        <!-- Admin Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
+                                Admin
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ url_for('booking.admin_facilities') }}">Facility Approval</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('booking.admin_bookings') }}">Booking Overview</a></li>
+                            </ul>
+                        </li>
                     {% elif current_user.role == "owner" %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('booking.list_facilities') }}">My Facilities</a></li>
@@ -107,6 +159,7 @@
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
                 {% endif %}
             </ul>
+
         </div>
     </div>
 </nav>
@@ -114,6 +167,22 @@
 <!-- CONTENT -->
 <div class="content-wrapper container-fluid">
     {% block content %}{% endblock %}
+</div>
+
+<!-- Sticky Bottom Navigation (Mobile Only) -->
+<div class="bottom-nav">
+    <a href="{{ url_for('main.home') }}" class="{% if request.endpoint == 'main.home' %}active{% endif %}">
+        <i class="bi bi-house-door-fill"></i> Home
+    </a>
+    <a href="{{ url_for('booking.list_facilities') }}" class="{% if request.endpoint == 'booking.list_facilities' %}active{% endif %}">
+        <i class="bi bi-search"></i> Browse
+    </a>
+    <a href="{{ url_for('booking.my_bookings') }}" class="{% if request.endpoint == 'booking.my_bookings' %}active{% endif %}">
+        <i class="bi bi-calendar-check"></i> Bookings
+    </a>
+    <a href="{{ url_for('auth.profile') }}" class="{% if request.endpoint == 'auth.profile' %}active{% endif %}">
+        <i class="bi bi-person"></i> Profile
+    </a>
 </div>
 
 <!-- FOOTER -->
