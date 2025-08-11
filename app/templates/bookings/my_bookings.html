@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="neon mb-3">My Bookings</h3>
+<div class="card p-3">
+  <ul class="list-unstyled">
+    {% for b in bookings %}
+      <li class="py-2 border-bottom">
+        <div class="d-flex justify-content-between">
+          <div>
+            <strong class="neon">{{ b.court.name }}</strong><br>
+            <small class="muted">{{ b.date }} • {{ b.start_time }} - {{ b.end_time }}</small>
+          </div>
+          <div class="text-end">
+            <div class="muted">₹{{ b.total_price }}</div>
+            <div class="muted">{{ b.status.value }}</div>
+          </div>
+        </div>
+      </li>
+    {% else %}
+      <p class="muted">No bookings yet.</p>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

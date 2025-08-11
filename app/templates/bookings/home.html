@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1 class="neon">Find courts & book instantly</h1>
+    <p class="muted">Local sports venues — book by hour, manage slots.</p>
+  </div>
+  <div>
+    {% if current_user.is_authenticated and current_user.role.value in ['owner','admin'] %}
+      <a class="btn btn-neon" href="{{ url_for('facility.add_facility') }}">Add Facility</a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="row gy-4">
+  {% for f in facilities %}
+  <div class="col-md-4">
+    <div class="card p-3 h-100">
+      <h5 class="neon">{{ f.name }}</h5>
+      <p class="muted">{{ f.location }}</p>
+      <p class="mb-1">{{ f.description[:120] }}{% if f.description|length > 120 %}...{% endif %}</p>
+      <div class="mt-auto d-flex justify-content-between align-items-center">
+        <a class="btn btn-outline-light btn-sm" href="{{ url_for('facility.add_court', facility_id=f.id) }}">View / Add Courts</a>
+      </div>
+    </div>
+  </div>
+  {% else %}
+    <p class="muted">No facilities available yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

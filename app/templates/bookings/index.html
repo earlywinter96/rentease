@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentEase - Welcome</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0a0a;
+            color: #fff;
+            text-align: center;
+        }
+
+        header {
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #1a1a1a, #111);
+            border-bottom: 2px solid #0ff;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #0ff;
+            text-shadow: 0 0 10px #0ff;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #aaa;
+        }
+
+        .btn-container {
+            margin-top: 40px;
+        }
+
+        a {
+            text-decoration: none;
+            padding: 12px 25px;
+            margin: 10px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            border: 2px solid #0ff;
+            color: #0ff;
+            background: transparent;
+            transition: 0.3s;
+        }
+
+        a:hover {
+            background: #0ff;
+            color: #000;
+            box-shadow: 0 0 15px #0ff, 0 0 25px #0ff;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding: 20px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Welcome to RentEase</h1>
+        <p>Your ultimate sports facility booking platform</p>
+    </header>
+
+    <div class="btn-container">
+        <a href="{{ url_for('main.login') }}">Login</a>
+        <a href="{{ url_for('main.register') }}">Register</a>
+    </div>
+
+    <footer>
+        &copy; {{ 2025 }} RentEase. All rights reserved.
+    </footer>
+
+</body>
+</html>

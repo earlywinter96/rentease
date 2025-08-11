@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="neon mb-3">Facilities</h2>
+<div class="row gy-4">
+  {% for f in facilities %}
+  <div class="col-md-6">
+    <div class="card p-3">
+      <div class="d-flex justify-content-between">
+        <div>
+          <h5 class="neon">{{ f.name }}</h5>
+          <p class="muted mb-1">{{ f.location }}</p>
+          <p>{{ f.description[:160] }}{% if f.description|length>160 %}...{% endif %}</p>
+        </div>
+        <div class="text-end">
+          <a class="btn btn-neon btn-sm mb-2" href="{{ url_for('facility.add_court', facility_id=f.id) }}">Add Court</a>
+        </div>
+      </div>
+
+      {% if f.courts %}
+        <hr class="border-light">
+        <div>
+          <strong class="muted">Courts</strong>
+          <ul class="list-unstyled mt-2">
+            {% for c in f.courts %}
+              <li class="d-flex justify-content-between py-1">
+                <div>{{ c.name }} • {{ c.sport_type }}</div>
+                <div>
+                  <small class="muted">₹{{ c.price_per_hour }}</small>
+                  <a class="btn btn-outline-light btn-sm ms-2" href="{{ url_for('booking.book_court', court_id=c.id) }}">Book</a>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  {% else %}
+    <p class="muted">No facilities yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

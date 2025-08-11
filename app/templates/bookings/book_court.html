@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="col-md-6 offset-md-3">
+  <div class="card p-4">
+    <h3 class="neon mb-3">Book {{ court.name }}</h3>
+    <form method="post">
+      <div class="mb-2"><input class="form-control" type="date" name="date" required></div>
+      <div class="mb-2"><input class="form-control" type="time" name="start_time" required></div>
+      <div class="mb-2"><input class="form-control" type="time" name="end_time" required></div>
+      <button class="btn btn-neon">Book Now</button>
+    </form>
+    <p class="mt-3 muted">Price/hour: ₹{{ court.price_per_hour }}</p>
+  </div>
+</div>
+{% endblock %}

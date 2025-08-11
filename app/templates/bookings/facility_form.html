@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="col-md-8 offset-md-2">
+  <div class="card p-4">
+    <h3 class="neon mb-3">Add Facility</h3>
+    <form method="post">
+      <div class="mb-2"><input class="form-control" name="name" placeholder="Facility Name" required></div>
+      <div class="mb-2"><input class="form-control" name="location" placeholder="Location" required></div>
+      <div class="mb-2"><textarea class="form-control" name="description" placeholder="Description"></textarea></div>
+      <button class="btn btn-neon">Submit for approval</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

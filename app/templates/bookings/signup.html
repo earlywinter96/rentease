@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card p-4">
+      <h3 class="neon mb-3">Create account</h3>
+      <form method="post">
+        <div class="mb-2"><input class="form-control" name="name" placeholder="Full name" required></div>
+        <div class="mb-2"><input class="form-control" name="email" placeholder="Email" required></div>
+        <div class="mb-2"><input class="form-control" name="password" type="password" placeholder="Password" required></div>
+        <div class="mb-3">
+          <select class="form-select" name="role">
+            <option value="user">Customer</option>
+            <option value="owner">Facility Owner</option>
+          </select>
+        </div>
+        <button class="btn btn-neon w-100">Sign up</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
