@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Facility Header -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <h2 class="fw-bold">{{ facility.name }}</h2>
+            <p class="text-muted mb-1">
+                <i class="bi bi-geo-alt"></i> {{ facility.location }}
+            </p>
+
+            {% if courts %}
+                {% set cheapest_court = courts|min(attribute='price_per_hour') %}
+                {% if cheapest_court.price_per_hour is not none %}
+                    <p class="fw-bold text-success">
+                        From ₹{{ "{:,.2f}".format(cheapest_court.price_per_hour) }} / hr
+                    </p>
+                {% endif %}
+            {% endif %}
+
+            <p>{{ facility.description }}</p>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+            {% if current_user.role in ["admin", "owner"] and (facility.owner_id == current_user.id or current_user.role == "admin") %}
+            <a href="{{ url_for('booking.edit_facility', facility_id=facility.id) }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-pencil"></i> Edit Facility
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Facility Image -->
+    <div class="mb-4">
+        <img src="{{ facility.image_url or url_for('static', filename='img/facility-placeholder.jpg') }}"
+             alt="{{ facility.name }}" class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;">
+    </div>
+
+    <!-- Courts List -->
+    <div class="row">
+        <div class="col-12 mb-3">
+            <h4 class="fw-bold">Available Courts</h4>
+        </div>
+        {% for court in courts %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ court.name }}</h5>
+                    <p class="text-muted mb-1"><i class="bi bi-trophy"></i> {{ court.sport_type }}</p>
+
+                    {% if court.price_per_hour is not none %}
+                        <p class="mb-2"><strong>₹{{ "{:,.2f}".format(court.price_per_hour) }}</strong> / hour</p>
+                    {% else %}
+                        <p class="mb-2 text-muted"><em>Price not set</em></p>
+                    {% endif %}
+
+                    <p class="small text-muted">
+                        {% if court.open_time and court.close_time %}
+                            <i class="bi bi-clock"></i>
+                            {{ court.open_time.strftime('%I:%M %p') }} - {{ court.close_time.strftime('%I:%M %p') }}
+                        {% else %}
+                            <i class="bi bi-clock"></i> Hours not available
+                        {% endif %}
+                    </p>
+
+                    <!-- Book Now Button -->
+                    <button class="btn btn-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#bookCourtModal{{ court.id }}">
+                        <i class="bi bi-calendar-check"></i> Book Now
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Modal -->
+        <div class="modal fade" id="bookCourtModal{{ court.id }}" tabindex="-1" aria-labelledby="bookCourtLabel{{ court.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <form method="POST" action="{{ url_for('booking.book_court', court_id=court.id) }}" class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="bookCourtLabel{{ court.id }}">Book {{ court.name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label small">Date</label>
+                            <input type="date" name="date" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small">Start Time</label>
+                            <input type="time" name="start_time" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small">End Time</label>
+                            <input type="time" name="end_time" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success w-100">Confirm Booking</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center text-muted">
+            <i class="bi bi-exclamation-circle"></i> No courts available for this facility.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

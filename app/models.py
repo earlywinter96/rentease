@@ -32,6 +32,11 @@ class User(UserMixin, db.Model):
     role = db.Column(db.Enum(UserRole, native_enum=False, length=16), nullable=False, default=UserRole.user)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
+    # OTP fields
+    otp_code = db.Column(db.String(10), nullable=True)
+    otp_expiry = db.Column(db.DateTime, nullable=True)
+    is_active = db.Column(db.Boolean, default=False)  # Only true after OTP verification
+
     facilities = db.relationship("Facility", back_populates="owner", cascade="all, delete-orphan")
     bookings = db.relationship("Booking", back_populates="user", cascade="all, delete-orphan")
     reviews = db.relationship("Review", back_populates="user", cascade="all, delete-orphan")
@@ -42,6 +47,20 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    # OTP helpers
+    def set_otp(self, code, validity_minutes=5):
+        from datetime import timedelta
+        self.otp_code = code
+        self.otp_expiry = datetime.utcnow() + timedelta(minutes=validity_minutes)
+
+    def clear_otp(self):
+        self.otp_code = None
+        self.otp_expiry = None
+        
+    def is_active(self):
+        return True  # Or your logic for active accounts    
+
+
 class Facility(db.Model):
     __tablename__ = "facilities"
     id = db.Column(db.Integer, primary_key=True)
@@ -49,6 +68,7 @@ class Facility(db.Model):
     name = db.Column(db.String(200), nullable=False)
     location = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=True)
+    image_url = db.Column(db.String(255), nullable=True)
     status = db.Column(db.Enum(FacilityStatus, native_enum=False, length=16), nullable=False, default=FacilityStatus.pending)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -83,6 +103,11 @@ class Booking(db.Model):
 
     user = db.relationship("User", back_populates="bookings")
     court = db.relationship("Court", back_populates="bookings")
+
+    def overlaps(self, start_time, end_time):
+        """Check if a given time range overlaps with this booking."""
+        return not (end_time <= self.start_time or start_time >= self.end_time)
+
 
 class Review(db.Model):
     __tablename__ = "reviews"

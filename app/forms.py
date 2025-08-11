@@ -43,7 +43,10 @@ class RegistrationForm(FlaskForm):
             raise ValidationError("Email already in use. Please choose a different one.")
 
     
+from wtforms import BooleanField
+
 class LoginForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired()])
-    submit = SubmitField("Log In")
+    remember = BooleanField("Remember Me")  # ✅ Add this line
+    submit = SubmitField("Login")

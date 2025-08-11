@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Admin - Bookings{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3>Booking Overview</h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Facility</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in bookings %}
+      <tr>
+        <td>{{ b.id }}</td>
+        <td>{{ b.user.name if b.user else 'N/A' }}</td>
+        <td>{{ b.court.facility.name if b.court and b.court.facility else 'N/A' }}</td>
+        <td>{{ b.date }}</td>
+        <td>{{ b.status.value }}</td>
+        <td>
+          <form method="post" action="{{ url_for('booking.admin_booking_action', booking_id=b.id) }}" style="display:inline-block;">
+            <input type="hidden" name="action" value="confirm">
+            <button class="btn btn-sm btn-success">Confirm</button>
+          </form>
+          <form method="post" action="{{ url_for('booking.admin_booking_action', booking_id=b.id) }}" style="display:inline-block;">
+            <input type="hidden" name="action" value="complete">
+            <button class="btn btn-sm btn-primary">Complete</button>
+          </form>
+          <form method="post" action="{{ url_for('booking.admin_booking_action', booking_id=b.id) }}" style="display:inline-block;">
+            <input type="hidden" name="action" value="cancel">
+            <button class="btn btn-sm btn-danger">Cancel</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="text-center">No bookings found</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

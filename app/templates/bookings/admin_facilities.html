@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Admin - Facilities{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3>Facility Approval Panel</h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Owner</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for f in facilities %}
+      <tr>
+        <td>{{ f.id }}</td>
+        <td>{{ f.name }}</td>
+        <td>{{ f.owner.name if f.owner else 'N/A' }}</td>
+        <td>{{ f.status.value }}</td>
+        <td>
+          <form method="post" action="{{ url_for('booking.admin_update_facility_status', facility_id=f.id) }}" style="display:inline-block;">
+            <input type="hidden" name="action" value="approve">
+            <button class="btn btn-sm btn-success">Approve</button>
+          </form>
+          <form method="post" action="{{ url_for('booking.admin_update_facility_status', facility_id=f.id) }}" style="display:inline-block;">
+            <input type="hidden" name="action" value="reject">
+            <button class="btn btn-sm btn-danger">Reject</button>
+          </form>
+          <form method="post" action="{{ url_for('booking.admin_update_facility_status', facility_id=f.id) }}" style="display:inline-block;">
+            <input type="hidden" name="action" value="pending">
+            <button class="btn btn-sm btn-warning">Pending</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="text-center">No facilities found</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
