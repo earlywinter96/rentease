@@ -1,77 +1,103 @@
-RentEase – Rental Management Web App
-Team Name: Hemant Solanki
-Team ID: 230
-Developer: Solo Developer – Hemant Solanki
+#  RentEase – Sports Facility & Court Booking Platform
 
-📌 Project Overview
-RentEase is a comprehensive rental management platform designed for seamless booking, listing, and managing of sports facilities and rental spaces. Built for efficiency and scalability, the platform supports role-based access (Admin, Owner, User) and integrates OTP verification for secure logins (with admin OTP bypass).
+RentEase is a **Flask-based sports facility booking platform** built for the Hackathon.  
+It allows users to search, book, and pay for sports courts and facilities online, with an **admin approval system** for facility listings.
 
-The goal is to simplify the rental experience for both owners and customers while giving admins complete control over approvals and listings.
+---
 
-🚀 Features
-For Users
-Search and filter facilities by location, sport, and price range
-View facility details, images, and available courts
-Book courts with a preferred date and time
-OTP-based secure login and verification
+🏆 Authors
+Hemant Solanki – Backend & Flask Development
+Hackathon Team RentEase
+Team no 230 
 
-For Owners
-Add, edit, and manage their facilities
-Upload facility images and set hourly prices
-Manage court availability
+## 🚀 Features
 
-For Admins
-Approve or reject new facility listings
-Manage all user accounts and bookings
-Direct admin login without OTP
-Access dedicated admin dashboards
+### 🔹 User Features
+- Browse and search sports facilities with filters (location, sport type, price range)
+- View facility details and available courts
+- Book courts with a specified date and time
+- Pay online using **Stripe INR** (supports card & UPI)
+- Download **professional PDF invoices** for confirmed bookings
 
-🛠 Tech Stack
-Backend: Python, Flask, SQLAlchemy
-Frontend: HTML5, CSS3, Bootstrap 5, Jinja2
-Database: SQLite / PostgreSQL
-Authentication: Flask-Login, OTP verification via Email (SMTP)
-Deployment Ready For: WSGI servers (Gunicorn, uWSGI)
+### 🔹 Admin Features
+- Admin approval panel for new facility listings
+- Approve or reject facilities
+- Manage user accounts
+
+### 🔹 Extras
+- OTP-based authentication for secure login/registration
+- Responsive and clean UI
+- Invoice generation with RentEase logo and unique invoice numbers
+- Hackathon mode – payment can be skipped, and an invoice generated instantly
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer        | Technology |
+|--------------|------------|
+| **Backend**  | Python 3, Flask, SQLAlchemy |
+| **Frontend** | HTML, CSS (Bootstrap), Jinja2 Templates |
+| **Database** | SQLite (default), can be switched to PostgreSQL/MySQL |
+| **Payments** | Stripe API (INR support) |
+| **PDF**      | ReportLab |
+| **Auth**     | Flask-Login, OTP Email Verification |
+
+---
+
+## 📂 Project Structure
 
 rentease/
-│── app/
-│   ├── routes/         # All Flask Blueprints
-│   ├── models.py       # Database Models
-│   ├── forms.py        # WTForms
-│   ├── utils.py        # Helper Functions (OTP, Email)
-│   ├── templates/      # Jinja2 HTML Templates
-│   ├── static/         # Images, CSS, JS
-│── venv/               # Virtual Environment (ignored in Git)
-│── README.md
-│── requirements.txt
-│── config.py
-│── run.py
+├── app/
+│ ├── routes/ # Flask Blueprints (auth, booking, facility, etc.)
+│ ├── templates/ # Jinja2 HTML templates
+│ ├── static/ # CSS, JS, Images
+│ ├── models.py # Database models
+│ ├── forms.py # WTForms definitions
+│ ├── init.py # App factory
+│ └── ...
+├── requirements.txt
+├── README.md
+└── run.py
 
 
-⚡ How to Run Locally
-Clone the repository
-git clone https://github.com/earlywinter96/rentease.git
+---
+
+## ⚙️ Setup & Installation
+
+### 1️⃣ Clone the repository
+```bash
+git clone https://github.com/your-username/rentease.git
 cd rentease
-Create & activate a virtual environment
 python3 -m venv venv
-source venv/bin/activate   # Mac/Linux
-venv\Scripts\activate      # Windows
-Install dependencies
+source venv/bin/activate  # Mac/Linux
+venv\Scripts\activate     # Windows
 pip install -r requirements.txt
-Run the server
+Create a .env file in the root directory:
+FLASK_APP=run.py
+FLASK_ENV=development
+STRIPE_SECRET_KEY=sk_test_yourkey
+STRIPE_PUBLISHABLE_KEY=pk_test_yourkey
+SECRET_KEY=supersecret
+MAIL_SERVER=smtp.example.com
+MAIL_PORT=587
+MAIL_USE_TLS=True
+MAIL_USERNAME=your_email
+MAIL_PASSWORD=your_password
+
+flask db upgrade
 flask run
-Access in browser
-http://127.0.0.1:5000
+Visit: http://127.0.0.1:5000
 
-🎯 Hackathon Relevance
-Fully meets the problem statement for rental management
-Focused on secure authentication, role-based access control, and admin approvals
-Built to be extended with payment gateways, analytics, and reporting
+💳 Hackathon Mode (Skip Payments)
+For demo purposes, you can skip Stripe payments:
 
-📧 Contact
-Hemant Solanki
-GitHub: earlywinter96
-Email: hemantsolanki333@gmail.com
+Book a court → Checkout → Instant PDF Invoice Download.
+
+📜 License
+This project is for educational/hackathon purposes.
+Feel free to fork and modify for personal or commercial use.
+
 
 
 
